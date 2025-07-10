@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievements - Tuan Hung</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .achievement-card {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--light-purple));
+            transition: left 0.3s ease;
+        }
+
+        .achievement-card:hover::before {
+            left: 0;
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-purple);
+            box-shadow: 0 15px 35px rgba(138, 43, 226, 0.2);
+        }
+
+        .achievement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .achievement-title {
+            font-size: 1.5rem;
+            color: var(--text-white);
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .achievement-date {
+            color: var(--accent-purple);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            background: rgba(138, 43, 226, 0.1);
+            padding: 5px 15px;
+            border: 1px solid var(--accent-purple);
+        }
+
+        .achievement-category {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--light-purple);
+            color: var(--light-purple);
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .achievement-description {
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .achievement-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .detail-label {
+            color: var(--accent-purple);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .detail-value {
+            color: var(--text-gray);
+            text-align: right;
+        }
+
+        .page-nav {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .back-button {
+            background: rgba(138, 43, 226, 0.3);
+            border: 2px solid var(--accent-purple);
+            color: var(--text-white);
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+        }
+
+        .back-button:hover {
+            background: var(--accent-purple);
+            color: var(--text-white);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(138, 43, 226, 0.4);
+        }
+
+        .achievements-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 120px 20px 60px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+
+        .stat-card {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-3px);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            color: var(--accent-purple);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: var(--text-gray);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile optimizations for achievements page */
+        @media (max-width: 768px) {
+            .achievements-container {
+                padding: 100px 25px 50px;
+            }
+            
+            .page-nav {
+                top: 15px;
+                left: 15px;
+            }
+            
+            .back-button {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+                box-shadow: 0 3px 12px rgba(138, 43, 226, 0.4);
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                margin-bottom: 40px;
+            }
+            
+            .stat-card {
+                padding: 20px 15px;
+            }
+            
+            .stat-number {
+                font-size: 2.5rem;
+            }
+            
+            .stat-label {
+                font-size: 0.8rem;
+            }
+            
+            .achievement-card {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .achievement-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .achievement-title {
+                font-size: 1.3rem;
+            }
+            
+            .achievement-date {
+                font-size: 0.8rem;
+                padding: 4px 12px;
+            }
+            
+            .achievement-details {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .achievements-container {
+                padding: 90px 20px 40px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .stat-card {
+                padding: 15px 10px;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .achievement-card {
+                padding: 15px;
+            }
+            
+            .achievement-title {
+                font-size: 1.1rem;
+                line-height: 1.3;
+            }
+            
+            .achievement-description {
+                font-size: 0.9rem;
+                line-height: 1.6;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-nav">
+        <a href="index.html" class="back-button">← BACK TO HOME</a>
+        <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" style="display: none;">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+    </div>
+
+    <div class="achievements-container">
+        <div class="section-header">
+            <h1>ACHIEVEMENTS</h1>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">3+</div>
+                <div class="stat-label">Years at LHP</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Physics Competitions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Students Taught</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100+</div>
+                <div class="stat-label">Photos Captured</div>
+            </div>
+        </div>
+
+        <!-- Academic Achievements -->
+        <div class="achievement-card">
+            <div class="achievement-header">
+                <h3 class="achievement-title">PHYSICS OLYMPIAD - NATIONAL LEVEL</h3>
+                <span class="achievement-date">2024</span>
+            </div>
+            <div class="achievement-category">ACADEMIC</div>
+            <div class="achievement-description">
+                Represented Le Hong Phong High School for the Gifted at the National Physics Olympiad, 
+                demonstrating exceptional problem-solving skills in theoretical and experimental physics.
+            </div>
+            <div class="achievement-details">
+                <div class="detail-item">
+                    <span class="detail-label">LEVEL</span>
+                    <span class="detail-value">National Competition</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">SUBJECT</span>
+                    <span class="detail-value">Physics</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">RANK</span>
+                    <span class="detail-value">Top 100 Nationally</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="achievement-card">
+            <div class="achievement-header">
+                <h3 class="achievement-title">ACADEMIC EXCELLENCE AWARD</h3>
+                <span class="achievement-date">2023-2024</span>
+            </div>
+            <div class="achievement-category">ACADEMIC</div>
+            <div class="achievement-description">
+                Consistently maintained top academic performance in the Physics major program at 
+                Le Hong Phong High School for the Gifted, one of Vietnam's most prestigious institutions.
+            </div>
+            <div class="achievement-details">
+                <div class="detail-item">
+                    <span class="detail-label">GPA</span>
+                    <span class="detail-value">9.2/10.0</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">CLASS RANK</span>
+                    <span class="detail-value">Top 5%</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">SUBJECTS</span>
+                    <span class="detail-value">Physics, Mathematics, Chemistry</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teaching Achievements -->
+        <div class="achievement-card">
+            <div class="achievement-header">
+                <h3 class="achievement-title">PEER TUTORING PROGRAM LEADER</h3>
+                <span class="achievement-date">2023-Present</span>
+            </div>
+            <div class="achievement-category">TEACHING</div>
+            <div class="achievement-description">
+                Founded and led a peer tutoring program for junior students struggling with physics concepts. 
+                Developed innovative teaching methods combining visual aids and practical demonstrations.
+            </div>
+            <div class="achievement-details">
+                <div class="detail-item">
+                    <span class="detail-label">STUDENTS HELPED</span>
+                    <span class="detail-value">50+ Students</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">IMPROVEMENT RATE</span>
+                    <span class="detail-value">85% Grade Improvement</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">SESSIONS</span>
+                    <span class="detail-value">200+ Hours</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Creative Achievements -->
+        <div class="achievement-card">
+            <div class="achievement-header">
+                <h3 class="achievement-title">SCHOOL EVENTS DOCUMENTATION LEAD</h3>
+                <span class="achievement-date">2022-Present</span>
+            </div>
+            <div class="achievement-category">VIDEOGRAPHY</div>
+            <div class="achievement-description">
+                Official photographer and videographer for major school events, competitions, and ceremonies. 
+                Created compelling visual narratives that captured the essence of academic excellence and student life.
+            </div>
+            <div class="achievement-details">
+                <div class="detail-item">
+                    <span class="detail-label">EVENTS COVERED</span>
+                    <span class="detail-value">25+ Events</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">PHOTOS TAKEN</span>
+                    <span class="detail-value">1000+ Photos</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">VIDEOS PRODUCED</span>
+                    <span class="detail-value">15 Short Films</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="achievement-card">
+            <div class="achievement-header">
+                <h3 class="achievement-title">PHYSICS EDUCATION VIDEO SERIES</h3>
+                <span class="achievement-date">2024</span>
+            </div>
+            <div class="achievement-category">CONTENT CREATION</div>
+            <div class="achievement-description">
+                Created an educational video series explaining complex physics concepts through engaging animations 
+                and real-world demonstrations. Videos gained popularity among students preparing for physics competitions.
+            </div>
+            <div class="achievement-details">
+                <div class="detail-item">
+                    <span class="detail-label">VIDEOS CREATED</span>
+                    <span class="detail-value">12 Episodes</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">TOTAL VIEWS</span>
+                    <span class="detail-value">5000+ Views</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">TOPICS COVERED</span>
+                    <span class="detail-value">Mechanics, Thermodynamics, Optics</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Achievements -->
+        <div class="achievement-card">
+            <div class="achievement-header">
+                <h3 class="achievement-title">PERSONAL PORTFOLIO WEBSITE</h3>
+                <span class="achievement-date">2025</span>
+            </div>
+            <div class="achievement-category">CODING</div>
+            <div class="achievement-description">
+                Designed and developed a personal portfolio website from scratch using modern web technologies. 
+                Showcased creative projects, academic achievements, and photography work in a futuristic, minimalist design.
+            </div>
+            <div class="achievement-details">
+                <div class="detail-item">
+                    <span class="detail-label">TECHNOLOGIES</span>
+                    <span class="detail-value">HTML, CSS, JavaScript</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">FEATURES</span>
+                    <span class="detail-value">Responsive, Interactive</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">DESIGN</span>
+                    <span class="detail-value">Custom UI/UX</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

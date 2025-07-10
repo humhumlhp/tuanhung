@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Showcase - Tuan Hung</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .showcase-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 20px 60px;
+        }
+
+        .page-nav {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .back-button {
+            background: rgba(138, 43, 226, 0.3);
+            border: 2px solid var(--accent-purple);
+            color: var(--text-white);
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+        }
+
+        .back-button:hover {
+            background: var(--accent-purple);
+            color: var(--text-white);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(138, 43, 226, 0.4);
+        }
+
+        .showcase-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 2px;
+            margin-bottom: 60px;
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            padding: 5px;
+        }
+
+        .tab-button {
+            background: rgba(138, 43, 226, 0.1);
+            border: 2px solid var(--accent-purple);
+            color: var(--text-gray);
+            padding: 15px 30px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            flex: 1;
+            text-transform: uppercase;
+        }
+
+        .tab-button.active {
+            background: rgba(138, 43, 226, 0.3);
+            color: var(--text-white);
+            border-color: var(--accent-purple);
+        }
+
+        .tab-button:hover:not(.active) {
+            background: rgba(138, 43, 226, 0.2);
+            color: var(--accent-purple);
+            border-color: var(--hover-purple);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Gallery Styles */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .gallery-item {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            aspect-ratio: 16/9;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-purple);
+            box-shadow: 0 15px 35px rgba(138, 43, 226, 0.2);
+        }
+
+        .gallery-item img,
+        .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover img,
+        .gallery-item:hover video {
+            transform: scale(1.05);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.8));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-info {
+            color: var(--text-white);
+        }
+
+        .gallery-title {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .gallery-description {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            letter-spacing: 0.5px;
+        }
+
+        /* Photography specific styles */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .photo-item {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .photo-item:nth-child(3n) {
+            grid-row: span 2;
+        }
+
+        .photo-item:nth-child(5n) {
+            grid-column: span 2;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.02);
+            border-color: var(--accent-purple);
+            z-index: 10;
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, var(--secondary-bg), var(--border-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* Video specific styles */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        .video-card {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .video-card:hover {
+            border-color: var(--accent-purple);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.15);
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 225px;
+            background: linear-gradient(45deg, var(--secondary-bg), var(--border-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .video-container iframe,
+        .video-container video {
+            width: 100%;
+            height: 280px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .upload-prompt {
+            text-align: center;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .upload-prompt p {
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            color: var(--accent-purple);
+        }
+
+        .video-placeholder:hover .upload-prompt {
+            transform: scale(1.1);
+        }
+
+        .video-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .video-placeholder:hover::before {
+            left: 100%;
+        }
+
+        .video-info {
+            padding: 20px 0;
+        }
+
+        .video-title {
+            color: var(--text-white);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .video-description {
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--accent-purple);
+            letter-spacing: 1px;
+        }
+
+        /* Equipment Section */
+        .equipment-section {
+            margin-top: 60px;
+            padding-top: 60px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .equipment-item {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .equipment-item:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-3px);
+        }
+
+        .equipment-icon {
+            font-size: 2rem;
+            color: var(--accent-purple);
+            margin-bottom: 15px;
+        }
+
+        .equipment-name {
+            color: var(--text-white);
+            font-size: 1rem;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .equipment-type {
+            color: var(--text-gray);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+
+        .modal-content img,
+        .modal-content video {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: var(--text-white);
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        @media (max-width: 1024px) {
+            .showcase-container {
+                padding: 70px 30px 50px;
+            }
+            
+            .video-grid {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .showcase-container {
+                padding: 70px 25px 50px;
+            }
+            
+            .page-nav {
+                top: 15px;
+                left: 15px;
+            }
+            
+            .back-button {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+                box-shadow: 0 3px 12px rgba(138, 43, 226, 0.4);
+            }
+            
+            .showcase-tabs {
+                flex-direction: column;
+                margin-bottom: 40px;
+            }
+            
+            .tab-button {
+                padding: 12px 20px;
+                font-size: 0.8rem;
+            }
+            
+            .gallery-grid,
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .photo-item:nth-child(3n),
+            .photo-item:nth-child(5n) {
+                grid-row: span 1;
+                grid-column: span 1;
+            }
+            
+            .video-card {
+                padding: 15px;
+            }
+            
+            .video-title {
+                font-size: 1.1rem;
+            }
+            
+            .video-description {
+                font-size: 0.9rem;
+            }
+            
+            .video-meta {
+                font-size: 0.75rem;
+                flex-direction: column;
+                gap: 5px;
+                align-items: flex-start;
+            }
+            
+            .equipment-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
+            .equipment-item {
+                padding: 15px;
+            }
+            
+            .equipment-icon {
+                font-size: 1.5rem;
+            }
+            
+            .equipment-name {
+                font-size: 0.9rem;
+            }
+            
+            .equipment-type {
+                font-size: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .showcase-container {
+                padding: 70px 20px 40px;
+            }
+            
+            .tab-button {
+                padding: 10px 15px;
+                font-size: 0.75rem;
+            }
+            
+            .video-card {
+                padding: 12px;
+            }
+            
+            .video-placeholder {
+                height: 180px;
+                font-size: 0.8rem;
+            }
+            
+            .video-title {
+                font-size: 1rem;
+                margin-bottom: 8px;
+            }
+            
+            .video-description {
+                font-size: 0.85rem;
+                margin-bottom: 12px;
+            }
+            
+            .photo-placeholder {
+                height: 150px;
+                font-size: 0.8rem;
+            }
+            
+            .equipment-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .equipment-item {
+                padding: 12px;
+            }
+            
+            .equipment-icon {
+                font-size: 1.3rem;
+                margin-bottom: 10px;
+            }
+            
+            .equipment-name {
+                font-size: 0.85rem;
+                margin-bottom: 3px;
+            }
+            
+            .equipment-type {
+                font-size: 0.7rem;
+            }
+            
+            .modal-content {
+                max-width: 95%;
+                max-height: 85%;
+            }
+            
+            .close-modal {
+                top: -35px;
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .tab-button {
+                min-height: 44px;
+            }
+            
+            .gallery-item,
+            .photo-item,
+            .video-placeholder {
+                cursor: pointer;
+            }
+            
+            .equipment-item:hover {
+                transform: none;
+            }
+            
+            .gallery-item:hover,
+            .photo-item:hover {
+                transform: none;
+            }
+            
+            .gallery-overlay {
+                opacity: 1;
+                background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-nav">
+        <a href="index.html" class="back-button">← BACK TO HOME</a>
+        <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" style="display: none;">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+    </div>
+
+    <div class="showcase-container">
+        <div class="section-header">
+            <h1>CREATIVE SHOWCASE</h1>
+        </div>
+
+        <div class="showcase-tabs">
+            <button class="tab-button active" data-tab="videography">VIDEOGRAPHY</button>
+            <button class="tab-button" data-tab="photography">PHOTOGRAPHY</button>
+
+        </div>
+
+        <!-- Videography Tab -->
+        <div id="videography" class="tab-content active">
+            <div class="video-grid">
+                <div class="video-card">
+                    <div class="video-container">
+                        <iframe width="100%" height="280" src="https://www.youtube.com/embed/WRTXtlA3G6g" 
+                                title="Physics Tutorial: Wave Mechanics" frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen loading="lazy">
+                        </iframe>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">CẦN CHI PHẢI ĐI TÌM BÔNG HOA ĐẸP NHẤT KHI CỜ LỜ ĐÃ CÓ 1 VƯỜN HOA</div>
+                        <div class="video-description">
+                            A Project for 8/3 International Women's Day
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-container">
+                        <iframe width="100%" height="280" src="https://www.youtube.com/embed/8F0utGjt1qA" 
+                                title="Creative Video Project" frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen loading="lazy">
+                        </iframe>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">VÒNG LẶP VÔ HẠN</div>
+                        <div class="video-description">
+                            A media product's of Le Hong Phong Press Club that I had a chance to work with as a director, cameraman and editor.
+                        </div>
+                    </div>
+                </div>
+
+               <div class="video-card">
+                    <div class="video-container">
+                        <iframe width="100%" height="280" src="https://www.youtube.com/embed/c_sKu3Iz69g" 
+                                title="Creative Video Project" frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen loading="lazy">
+                        </iframe>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">CREATIVE VIDEO PROJECT</div>
+                        <div class="video-description">
+                            Just an edit of my old Translating Device.
+                        </div> 
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-container">
+                        <iframe width="100%" height="280" src="https://www.youtube.com/embed/IwNeeX5-ywg" 
+                                title="Video Project" frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen loading="lazy">
+                        </iframe>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">TRAFFIC SAFETY AWARENESS VIDEO</div>
+                        <div class="video-description">
+                            A video campaign to raise awareness of young people about traffic safety.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-container">
+                        <iframe width="100%" height="280" src="https://www.youtube.com/embed/rqh-EVtVmhc" 
+                                title="New Video Project" frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen loading="lazy">
+                        </iframe>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">What's your last memory of being a senior</div>
+                        <div class="video-description">
+                            A video that I made as a memory before leaving secondary school.
+                        </div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-container">
+                        <iframe width="100%" height="280" src="https://www.youtube.com/embed/eom_VLlLSaw" 
+                                title="Latest Creative Project" frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen loading="lazy">
+                        </iframe>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">A Memory with my 9A3 Classmates</div>
+                        <div class="video-description">
+                            Memories, just memories.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photography Tab -->
+        <div id="photography" class="tab-content">
+            <div class="photo-grid">
+                <div class="photo-item">
+                    <div class="photo-placeholder">PORTRAIT: PHYSICS OLYMPIAD WINNER</div>
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <div class="gallery-title">VICTORY PORTRAIT</div>
+                            <div class="gallery-description">Capturing the joy of achievement</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="photo-item">
+                    <div class="photo-placeholder">LANDSCAPE: SCHOOL CAMPUS</div>
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <div class="gallery-title">CAMPUS LIFE</div>
+                            <div class="gallery-description">Morning light on the academic buildings</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="photo-item">
+                    <div class="photo-placeholder">MACRO: PHYSICS EQUIPMENT</div>
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <div class="gallery-title">PRECISION TOOLS</div>
+                            <div class="gallery-description">Close-up of laboratory instruments</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="photo-item">
+                    <div class="photo-placeholder">EVENT: SCIENCE FAIR</div>
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <div class="gallery-title">INNOVATION SHOWCASE</div>
+                            <div class="gallery-description">Students presenting their projects</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="photo-item">
+                    <div class="photo-placeholder">STREET: STUDENT LIFE</div>
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <div class="gallery-title">CANDID MOMENTS</div>
+                            <div class="gallery-description">Authentic student interactions</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="photo-item">
+                    <div class="photo-placeholder">ABSTRACT: LIGHT EXPERIMENTS</div>
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <div class="gallery-title">PHYSICS AS ART</div>
+                            <div class="gallery-description">Light refraction patterns</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="photo-item">
+                    <div class="photo-placeholder">PORTRAIT: TEACHING MOMENT</div>
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <div class="gallery-title">KNOWLEDGE SHARING</div>
+                            <div class="gallery-description">Peer tutoring session</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="photo-item">
+                    <div class="photo-placeholder">ARCHITECTURE: LIBRARY</div>
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <div class="gallery-title">STUDY SANCTUARY</div>
+                            <div class="gallery-description">Geometric lines and learning spaces</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Equipment Tab -->
+        <div id="equipment" class="tab-content">
+            <div class="section-header">
+                <h2>MY CREATIVE TOOLS</h2>
+            </div>
+            
+            <div class="equipment-grid">
+                <div class="equipment-item">
+                    <div class="equipment-icon">📷</div>
+                    <div class="equipment-name">CANON EOS R6</div>
+                    <div class="equipment-type">MIRRORLESS CAMERA</div>
+                </div>
+                
+                <div class="equipment-item">
+                    <div class="equipment-icon">🎥</div>
+                    <div class="equipment-name">SONY FX3</div>
+                    <div class="equipment-type">CINEMA CAMERA</div>
+                </div>
+                
+                <div class="equipment-item">
+                    <div class="equipment-icon">🔍</div>
+                    <div class="equipment-name">CANON 24-70MM F/2.8</div>
+                    <div class="equipment-type">STANDARD LENS</div>
+                </div>
+                
+                <div class="equipment-item">
+                    <div class="equipment-icon">📸</div>
+                    <div class="equipment-name">CANON 85MM F/1.4</div>
+                    <div class="equipment-type">PORTRAIT LENS</div>
+                </div>
+                
+                <div class="equipment-item">
+                    <div class="equipment-icon">🎬</div>
+                    <div class="equipment-name">ADOBE PREMIERE PRO</div>
+                    <div class="equipment-type">VIDEO EDITING</div>
+                </div>
+                
+                <div class="equipment-item">
+                    <div class="equipment-icon">🖼️</div>
+                    <div class="equipment-name">ADOBE LIGHTROOM</div>
+                    <div class="equipment-type">PHOTO EDITING</div>
+                </div>
+                
+                <div class="equipment-item">
+                    <div class="equipment-icon">🎙️</div>
+                    <div class="equipment-name">RODE MICROPHONE</div>
+                    <div class="equipment-type">AUDIO RECORDING</div>
+                </div>
+                
+                <div class="equipment-item">
+                    <div class="equipment-icon">💡</div>
+                    <div class="equipment-name">LED PANEL LIGHTS</div>
+                    <div class="equipment-type">LIGHTING KIT</div>
+                </div>
+            </div>
+
+            <div class="equipment-section">
+                <div class="section-header">
+                    <h3>WORKFLOW & TECHNIQUES</h3>
+                </div>
+                
+                <div style="max-width: 800px; margin: 0 auto; color: var(--text-gray); line-height: 1.8;">
+                    <p style="margin-bottom: 20px;">
+                        My creative process combines technical precision with artistic vision. For videography, 
+                        I focus on storytelling through careful composition, dynamic movement, and strategic use of natural light.
+                    </p>
+                    
+                    <p style="margin-bottom: 20px;">
+                        In photography, I specialize in capturing authentic moments during school events and creating 
+                        compelling portraits that reveal the dedication and passion of my fellow students.
+                    </p>
+                    
+                    <p>
+                        Post-production is where the magic happens - I use color grading and precise editing to enhance 
+                        the emotional impact of each piece while maintaining the authentic feel of the original moment.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for viewing images/videos -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <div id="modal-media"></div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+
+            // Modal functionality for placeholders
+            const modal = document.getElementById('modal');
+            const modalMedia = document.getElementById('modal-media');
+            const closeModal = document.querySelector('.close-modal');
+            const galleryItems = document.querySelectorAll('.gallery-item, .photo-item, .video-placeholder');
+
+            galleryItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const placeholderText = this.textContent || this.querySelector('.photo-placeholder, .video-placeholder').textContent;
+                    modalMedia.innerHTML = `<div style="padding: 50px; text-align: center; color: var(--text-gray); font-size: 1.2rem; letter-spacing: 1px;">${placeholderText}<br><br>Media content will be displayed here</div>`;
+                    modal.classList.add('active');
+                });
+            });
+
+            closeModal.addEventListener('click', function() {
+                modal.classList.remove('active');
+            });
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+
+            // Equipment hover effects
+            const equipmentItems = document.querySelectorAll('.equipment-item');
+            equipmentItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.05)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
