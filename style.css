@@ -87,6 +87,8 @@ html {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .logo span {
@@ -95,6 +97,8 @@ html {
     display: inline;
     font-weight: 500;
     letter-spacing: 1px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .logo-image {
@@ -1064,7 +1068,8 @@ img[loading="lazy"].loaded {
     }
     
     .logo {
-        max-width: 200px;
+        max-width: 240px;
+        gap: 0.3rem;
     }
     
     .logo span {
@@ -1267,7 +1272,8 @@ img[loading="lazy"].loaded {
     }
     
     .logo {
-        max-width: 180px;
+        max-width: 220px;
+        gap: 0.25rem;
     }
     
     .logo span {
@@ -1590,7 +1596,8 @@ img[loading="lazy"].loaded {
     }
     
     .logo {
-        max-width: 160px;
+        max-width: 200px;
+        gap: 0.2rem;
     }
     
     .logo span {
