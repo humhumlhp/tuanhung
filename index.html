@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hi, I'm Hung </title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="homepage">
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="nav">
+                <div class="logo">
+                    <span>From the creators of  </span>
+                    <a href="https://thuongthucvatli.com" target="_blank" rel="noopener noreferrer">
+                        <img src="Assets/pictures/ttvlwtm.png" alt="TTVL" class="logo-image">
+                    </a>
+                </div>
+                <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+                <nav class="nav-links">
+                    <a href="#about">ABOUT ME</a>
+                    <a href="#certificates">CERTIFICATES</a>
+                  <!-- <a href="showcase.html">SHOWCASE</a>--> 
+                    <a href="#contact">CONTACT</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-title">
+                    <div class="typewriter-container">
+                        <span class="typewriter-text"></span><span class="cursor">|</span>
+                    </div>
+                </div>
+                <p class="hero-subtitle">PHYSICS STUDENT / VIDEOGRAPHER / EDUCATOR</p>
+                <div class="hero-description">
+                    Exploring the mysteries of physics while capturing life through the lens and sharing knowledge with others.
+                </div>
+                <a href="showcase.html" class="cta-button">VIEW WORK</a>
+            </div>
+        </section>
+
+
+        <!-- School Project Label -->
+        <div class="school-project" style="width:100%;text-align:center;margin-top:32px;margin-bottom:8px;">
+            <span style="font-size:1.25rem;font-weight:700;letter-spacing:1px;">School project below</span><br>
+            <span style="font-size:2rem;display:inline-block;animation:bounceArrow 1s infinite;">&#8595;</span>
+        </div>
+
+        <!-- Video Introduction Section-->
+        <section id="video-intro" class="video-section">
+            <div class="video-container">
+                <video id="introVideo" class="intro-video" loop>
+                    <source src="Assets/video/timhoa.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="video-overlay">
+                    <div class="video-controls">
+                        <button id="muteBtn" class="mute-button">
+                            <svg class="volume-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                            </svg>
+                            <svg class="mute-icon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                                <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Playback Track Control -->
+                    <div class="playback-track" id="playbackTrack">
+                        <div class="track-container">
+                            <div class="track-progress" id="trackProgress"></div>
+                            <div class="track-handle" id="trackHandle"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="video-clickable-area" id="videoClickArea"></div>
+                </div>
+            </div>
+        </section>
+
+        
+
+
+
+        <!-- About Section -->
+
+
+
+        <section id="about" class="section">
+            <div class="section-header">
+                <h2>ABOUT ME</h2>
+            </div>
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="Assets/pictures/me.jpg" alt="Hung - Physics Student" class="profile-image">
+                </div>
+                <div class="about-text">
+                    <p style="text-align: justify;">Hi, my name is Hung. I'm currently a Physics major at Le Hong Phong High School for the Gifted in Vietnam. I have a deep passion for physics—not only in studying the subject, but also in sharing and explaining concepts to fellow enthusiasts. <br>
+                    I’ve had teaching experience at the Christina Noble Children’s Foundation – Sunshine Home for Boys, where I enjoyed helping young learners explore scientific ideas. <br>
+                    I’m also a self-taught learner with a strong interest in creative and technical skills. I began photography, videography, and coding by teaching myself through online resources like YouTube, and have been developing my skills through hands-on practice ever since.</p>
+                </div>
+            </div>
+            
+            <div class="skills-section">
+                <div class="skills-header">
+                    <h3>MY SKILLS</h3>
+                </div>
+                <div class="skills"> 
+                    <div class="skill-item">PHYSICS</div>
+                    <div class="skill-item">VIDEOGRAPHY</div>
+                    <div class="skill-item">PHOTOGRAPHY</div>
+                    <div class="skill-item">TEACHING</div>
+                    <div class="skill-item">CODING</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quote Section -->
+        <section id="quote" class="section quote-section">
+            <div class="quote-container">
+                <div class="quote-content">
+                    <div class="quote-mark">"</div>
+                    <blockquote class="quote-text">
+                    We're not good because of what we do <br>
+                    we do good because of who we are.
+                    </blockquote>
+                    <cite class="quote-author">Words I live by (inspired by [Thỏ bảy màu])</cite>
+                </div>
+            </div>
+        </section>
+
+        <!-- Certificates Section -->
+        <section id="certificates" class="section">
+            <div class="section-header">
+                <h2>CERTIFICATES</h2>
+            </div>
+            <div class="certificates-grid">
+                <div class="certificate-card">
+                    <div class="certificate-image">
+                        <img src="Assets/certi/ap-csa.png" alt="ADVANCE PLACEMENT - COMPUTER SCIENCE A" class="certificate-img" onclick="openImageModal(this)" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div class="image-placeholder" style="display:none;">
+                            <span>ADVANCE PLACEMENT - COMPUTER SCIENCE A</span>
+                        </div>
+                    </div>
+                    <div class="certificate-content">
+                        <div class="certificate-number">01</div>
+                        <h3>ADVANCE PLACEMENT - COMPUTER SCIENCE A</h3>
+                        <p>Self-study. Scored 4.</p>
+                        <div class="certificate-year">2025</div>
+                    </div>
+                </div>
+                <div class="certificate-card">
+                    <div class="certificate-image">
+                        <img src="Assets/certi/ap-calc-bc.png" alt="Advance Placement Score - Calculus BC" class="certificate-img" onclick="openImageModal(this)" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div class="image-placeholder" style="display:none;">
+                            <span>Advance Placement Score - Calculus BC</span>
+                        </div>
+                    </div>
+                    <div class="certificate-content">
+                        <div class="certificate-number">01</div>
+                        <h3>ADVANCE PLACEMENT - CALCULUS BC</h3>
+                        <p>Self-study. Scored 4.</p>
+                        <div class="certificate-year">2025</div>
+                    </div>
+                </div>
+                <div class="certificate-card">
+                    <div class="certificate-image">
+                        <img src="Assets/certi/ap-phy-c.png" alt="ADVANCE PLACEMENT - PHYSICS C: MECHANICS" class="certificate-img" onclick="openImageModal(this)" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div class="image-placeholder" style="display:none;">
+                            <span>ADVANCE PLACEMENT - PHYSICS C: MECHANICS</span>
+                        </div>
+                    </div>
+                    <div class="certificate-content">
+                        <div class="certificate-number">01</div>
+                        <h3>ADVANCE PLACEMENT - PHYSICS C: MECHANICS</h3>
+                        <p>Self-study. Scored 4.</p>
+                        <div class="certificate-year">2025</div>
+                    </div>
+                </div>
+                <div class="certificate-card">
+                    <div class="certificate-image">
+                        <img src="Assets/certi/CTTTK12-GIAO2124.jpg" alt="LHP TRADITIONAL GRADUATION EVENT - GIAO 2124" class="certificate-img" onclick="openImageModal(this)" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div class="image-placeholder" style="display:none;">
+                            <span>COLLABORATOR - LHP TRADITIONAL GRADUATION EVENT - GIAO 2124</span>
+                        </div>
+                    </div>
+                    <div class="certificate-content">
+                        <div class="certificate-number">01</div>
+                        <h3>LHP TRADITIONAL GRADUATION EVENT - GIAO 2124</h3>
+                        <p>COLLABORATOR - Design & Media Dept.</p>
+                        <div class="certificate-year">2024</div>
+                    </div>
+                </div>
+                <div class="certificate-card">
+                    <div class="certificate-image">
+                        <img src="Assets/certi/robotraffic-3rd-place.jpg" alt="Robotraffic 3rd Place Certificate" class="certificate-img" onclick="openImageModal(this)" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div class="image-placeholder" style="display:none;">
+                            <span>Robotraffic Competition - 3rd Place</span>
+                        </div>
+                    </div>
+                    <div class="certificate-content">
+                        <div class="certificate-number">02</div>
+                        <h3>ROBOTRAFFIC COMPETITION</h3>
+                        <p>Vietnam Robotraffic Competition - 3rd Place</p>
+                        <div class="certificate-year">2024</div>
+                    </div>
+                </div>
+                 <div class="certificate-card">
+                    <div class="certificate-image">
+                        <img src="Assets/certi/Robotraffic Participation.jpg" alt="Robotraffic Participation" class="certificate-img" onclick="openImageModal(this)" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div class="image-placeholder" style="display:none;">
+                            <span>Robotraffic Participation</span>
+                        </div>
+                    </div>
+                    <div class="certificate-content">
+                        <div class="certificate-number">03</div>
+                        <h3>ROBOTRAFFIC COMPETITION</h3>
+                        <p>Vietnam Robotraffic Competition - Certificate of Participation</p>
+                        <div class="certificate-year">2024</div>
+                    </div>
+                </div>
+               
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="section-header">
+                <h2>CONTACT ME</h2>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <span class="contact-label">EMAIL</span>
+                        <span class="contact-value">
+                            <span class="email-container" onclick="copyEmail(event)">
+                                <span class="email-text">tuanhung@thuongthucvatli.com</span>
+                                <span class="copy-button" id="copyButton" onclick="copyEmail(event)">📋 COPY</span>
+                            </span>
+                        </span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-label">SCHOOL</span>
+                        <span class="contact-value">
+                            <a href="https://maps.app.goo.gl/eEtx4JM7yb5D4o3s6" target="_blank" rel="noopener noreferrer">Le Hong Phong High School for the Gifted</a>
+                        </span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-label">INSTAGRAM</span>
+                        <span class="contact-value">
+                            <a href="https://instagram.com/gnuhnauthnyuh" target="_blank" rel="noopener noreferrer">@gnuhnauthnyuh</a>
+                        </span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-label">GITHUB</span>
+                        <span class="contact-value">
+                            <a href="https://github.com/humhumlhp" target="_blank" rel="noopener noreferrer">https://github.com/humhumlhp</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2025 tuanhung@thuongthucvatli.com</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <span>↑</span>
+    </button>
+
+    <!-- Image Modal for Fullscreen View -->
+    <div class="image-modal" id="imageModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <img class="modal-image" id="modalImage" src="" alt="">
+            <div class="modal-caption" id="modalCaption"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
