@@ -48,12 +48,24 @@ html {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
+    scroll-snap-type: y proximity;
+    scroll-padding-top: 0;
+}
+
+/* Ensure page starts at top on load */
+body.homepage {
+    scroll-behavior: auto;
 }
 
 .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 40px;
+}
+
+/* Scroll snap for main sections - less aggressive */
+.hero, .video-section, .montage-section {
+    scroll-snap-align: start;
 }
 
 /* Header Styles */
@@ -67,7 +79,37 @@ html {
     border-bottom: 1px solid var(--border-color);
     z-index: 1000;
     padding: 16.2px 0;
-    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.3s ease;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Dark mode for video section */
+body.video-mode .header {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.video-mode .back-to-top {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Smooth hero to video transition */
+.hero {
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 80%);
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    min-height: 500px;
+    scroll-snap-align: start;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    z-index: 1;
 }
 
 .nav {
@@ -327,6 +369,411 @@ html {
     width: 50px;
     height: 2px;
     background: var(--accent-purple);
+}
+
+/* Video Introduction Section */
+.video-section {
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    position: relative;
+    background: var(--primary-bg);
+    overflow: hidden;
+    border-bottom: none;
+    padding: 0;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    scroll-snap-align: start;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.intro-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: var(--primary-bg);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 40px;
+    pointer-events: none;
+    transition: all 0.5s ease;
+}
+
+.video-controls {
+    display: flex;
+    gap: 20px;
+    align-self: flex-end;
+    pointer-events: all;
+    z-index: 1001;
+    margin-bottom: 15px;
+    transition: all 0.5s ease;
+}
+
+/* Better positioning to avoid navbar overlap */
+body.video-mode .video-controls {
+    position: fixed;
+    bottom: -5px;
+    right: 40px;
+    z-index: 1001;
+}
+
+.mute-button {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid var(--accent-purple);
+    color: var(--text-white);
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', monospace;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(138, 43, 226, 0.3);
+}
+
+.mute-button:hover {
+    background: rgba(138, 43, 226, 0.9);
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(138, 43, 226, 0.5);
+}
+
+.volume-icon, .mute-icon {
+    width: 31px;
+    height: 31px;
+    transition: all 0.3s ease;
+}
+
+.video-clickable-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    pointer-events: all;
+    z-index: 5;
+}
+
+/* Play/Pause indicator */
+.play-pause-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    border: 3px solid var(--accent-purple);
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+    font-size: 2rem;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    pointer-events: none;
+    z-index: 15;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4);
+}
+
+.play-pause-indicator.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.play-pause-indicator svg {
+    width: 40px;
+    height: 40px;
+}
+
+/* Video paused state */
+.video-section.paused .intro-video {
+    filter: brightness(0.6);
+}
+
+/* Don't dim video when paused in video mode */
+body.video-mode .video-section.paused .intro-video {
+    filter: brightness(1) !important;
+}
+
+/* Immersive video mode - only hide UI elements, keep video bright */
+body.video-mode {
+    transition: all 0.3s ease;
+}
+
+body.video-mode .video-section {
+    z-index: 999;
+    transition: z-index 0.3s ease;
+}
+
+/* Ensure video stays bright in video mode */
+body.video-mode .intro-video {
+    filter: brightness(1) !important;
+}
+
+/* Keep video overlay transparent in video mode */
+body.video-mode .video-overlay {
+    background: transparent !important;
+}
+
+/* Photo Montage Section */
+.montage-section {
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    position: relative;
+    background: var(--primary-bg);
+    overflow: hidden;
+    border-bottom: none;
+    padding: 0;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    scroll-snap-align: start;
+}
+
+.montage-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-rows: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 40px;
+    animation: photoFloat 20s ease-in-out infinite;
+}
+
+.photo-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid var(--accent-purple);
+    box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.photo-item:hover {
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 0 20px 40px rgba(138, 43, 226, 0.4);
+    z-index: 10;
+}
+
+.photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.photo-item:hover img {
+    transform: scale(1.1);
+}
+
+/* Individual photo positioning for messy grid effect */
+.photo-1 {
+    grid-column: 1 / 3;
+    grid-row: 1 / 3;
+    transform: rotate(-2deg);
+}
+
+.photo-2 {
+    grid-column: 3 / 4;
+    grid-row: 1 / 2;
+    transform: rotate(3deg);
+}
+
+.photo-3 {
+    grid-column: 4 / 6;
+    grid-row: 1 / 2;
+    transform: rotate(-1deg);
+}
+
+.photo-4 {
+    grid-column: 3 / 5;
+    grid-row: 2 / 4;
+    transform: rotate(2deg);
+}
+
+.photo-5 {
+    grid-column: 1 / 2;
+    grid-row: 3 / 5;
+    transform: rotate(-3deg);
+}
+
+.photo-6 {
+    grid-column: 2 / 4;
+    grid-row: 4 / 5;
+    transform: rotate(1deg);
+}
+
+.photo-7 {
+    grid-column: 5 / 6;
+    grid-row: 2 / 4;
+    transform: rotate(-2deg);
+}
+
+.photo-8 {
+    grid-column: 4 / 6;
+    grid-row: 4 / 6;
+    transform: rotate(2deg);
+}
+
+.montage-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 40px;
+    border: 2px solid var(--accent-purple);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+.montage-title {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--text-white);
+    letter-spacing: 3px;
+    margin-bottom: 30px;
+    background: linear-gradient(45deg, var(--text-white), var(--light-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(138, 43, 226, 0.3);
+}
+
+.scroll-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: var(--accent-purple);
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+}
+
+.scroll-arrow {
+    font-size: 1.5rem;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes photoFloat {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Entrance animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Enhanced photo grid animations */
+.photo-item {
+    animation: fadeInUp 0.6s ease-out forwards;
+    animation-delay: calc(var(--delay, 0) * 0.1s);
+}
+
+.photo-1 { --delay: 1; }
+.photo-2 { --delay: 2; }
+.photo-3 { --delay: 3; }
+.photo-4 { --delay: 4; }
+.photo-5 { --delay: 5; }
+.photo-6 { --delay: 6; }
+.photo-7 { --delay: 7; }
+.photo-8 { --delay: 8; }
+
+/* Video controls entrance */
+.video-controls {
+    animation: slideInFromRight 0.8s ease-out 0.5s both;
+}
+
+.montage-overlay {
+    animation: scaleIn 0.8s ease-out 0.5s both;
 }
 
 /* About Section */
@@ -1011,6 +1458,110 @@ img[loading="lazy"].loaded {
     will-change: opacity, visibility, transform;
 }
 
+/* Section transition effects */
+.video-section, .montage-section {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.video-section.visible, .montage-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Smooth scroll behavior for section transitions */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Video section mobile optimizations */
+@media (max-width: 768px) {
+    /* Less aggressive scroll snap on mobile */
+    html {
+        scroll-snap-type: y proximity;
+        -webkit-scroll-snap-type: y proximity;
+    }
+    
+    .hero, .video-section, .montage-section {
+        scroll-snap-align: start;
+        -webkit-scroll-snap-align: start;
+    }
+    
+    .video-overlay {
+        padding: 20px;
+    }
+    
+    .video-controls {
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+    
+    body.video-mode .video-controls {
+        bottom: 30px;
+        right: 30px;
+    }
+    
+    .mute-button {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .volume-icon, .mute-icon {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .play-pause-indicator {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .play-pause-indicator svg {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .montage-title {
+        font-size: 2rem;
+    }
+    
+    .photo-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-rows: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        padding: 20px;
+    }
+    
+    .montage-overlay {
+        padding: 30px 20px;
+    }
+    
+    .scroll-indicator {
+        font-size: 0.8rem;
+    }
+    
+    /* Adjust photo positioning for mobile */
+    .photo-1, .photo-2, .photo-3, .photo-4, 
+    .photo-5, .photo-6, .photo-7, .photo-8 {
+        grid-column: auto;
+        grid-row: auto;
+    }
+}
+
+/* Ultra-wide screen optimizations */
+@media (min-width: 1920px) {
+    .photo-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 30px;
+        padding: 60px;
+    }
+    
+    .montage-title {
+        font-size: 4rem;
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .container {
@@ -1362,148 +1913,53 @@ img[loading="lazy"].loaded {
         margin-bottom: 25px;
     }
     
-    .about-content {
-        flex-direction: column;
-        gap: 30px;
-        align-items: center;
-    }
-    
-    .about-image {
-        order: -1;
-    }
-    
-    .profile-image {
-        width: 220px;
-        height: 220px;
-    }
-    
-    .about-text {
-        text-align: center;
-    }
-    
-    /* Skills section responsive styles */
-    .skills-section {
-        gap: 30px;
-    }
-    
     .skills {
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
+        gap: 15px;
     }
     
     .skill-item {
-        padding: 8px 16px;
-        font-size: 0.8rem;
-        width: 100%;
-        max-width: 220px;
+        padding: 10px 18px;
+        font-size: 0.85rem;
+        min-height: 44px;
+    }
+    
+    .certificates-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        margin-top: 40px;
+    }
+    
+    .certificate-content {
+        padding: 25px;
+    }
+    
+    .project-card h3 {
+        font-size: 1.3rem;
+    }
+    
+    .contact-item {
+        flex-direction: column;
         text-align: center;
+        gap: 10px;
+        padding: 20px 0;
+    }
+    
+    .contact-label {
+        font-size: 0.85rem;
+    }
+    
+    .contact-value {
+        font-size: 1rem;
         min-height: 44px;
         display: flex;
         align-items: center;
         justify-content: center;
     }
     
-    /* Skills header responsive styles */
-    .skills-header h3 {
-        font-size: 1.2rem;
-        letter-spacing: 1.5px;
-    }
-    
-    .skills-header h3::before,
-    .skills-header h3::after {
-        width: 25px;
-    }
-    
-    .skills-header h3::before {
-        left: -35px;
-    }
-    
-    .skills-header h3::after {
-        right: -35px;
-    }
-
-    .project-card {
-        padding: 20px 15px;
-    }
-    
-    .project-card h3 {
-        font-size: 1.1rem;
-        margin-bottom: 15px;
-        line-height: 1.4;
-    }
-    
-    .project-card p {
-        font-size: 0.9rem;
-        margin-bottom: 15px;
-        line-height: 1.6;
-    }
-    
-    .project-tech {
-        font-size: 0.8rem;
-    }
-    
-    .contact-item {
-        padding: 15px 0;
-        gap: 8px;
-    }
-    
-    .contact-label {
-        font-size: 0.8rem;
-    }
-    
-    .contact-value {
-        font-size: 0.95rem;
-        min-height: 48px;
-        padding: 8px 15px;
-    }
-    
-    .footer {
-        padding: 35px 0;
-    }
-    
-    .footer-content p {
-        font-size: 0.8rem;
-        line-height: 1.5;
-    }
-    
-    /* Quote section responsive styles */
-    .quote-section {
-        margin: 40px 0;
-    }
-    
-    .quote-container {
-        padding: 35px 15px;
-    }
-    
-    .quote-mark {
-        font-size: 3.5rem;
-        top: -15px;
-    }
-    
-    .quote-text {
-        font-size: 1.1rem;
-        padding: 25px 0 15px 0;
-        line-height: 1.6;
-    }
-    
-    .quote-author {
-        font-size: 0.9rem;
-        letter-spacing: 1px;
-    }
-    
-    .quote-author::before,
-    .quote-author::after {
-        width: 20px;
-        margin-left: 8px;
-        margin-right: 8px;
-    }
-    
-    /* Modal responsive styles for mobile */
+    /* Mobile modal adjustments */
     .modal-content {
         max-width: 95vw;
         max-height: 95vh;
-        padding: 0 10px;
         margin: 10px;
     }
     
@@ -1542,42 +1998,6 @@ img[loading="lazy"].loaded {
         font-size: 1.5rem;
         min-height: 48px;
         min-width: 48px;
-    }
-    
-    /* Email copy feature mobile optimization */
-    .email-container {
-        min-height: 48px;
-        padding: 8px 0;
-    }
-    
-    .copy-button {
-        top: -40px;
-        font-size: 0.75rem;
-        padding: 6px 10px;
-    }
-    
-    /* Certificate grid mobile optimization */
-    .certificates-grid {
-        gap: 20px;
-        margin-top: 30px;
-    }
-    
-    .certificate-item {
-        padding: 15px;
-    }
-    
-    .certificate-content {
-        padding: 20px 15px;
-    }
-    
-    .certificate-content h3 {
-        font-size: 1.1rem;
-        margin-bottom: 12px;
-    }
-    
-    .certificate-content p {
-        font-size: 0.9rem;
-        line-height: 1.6;
     }
 }
 
@@ -1822,3 +2242,279 @@ img[loading="lazy"].loaded {
         user-select: none;
     }
 }
+
+/* Audio notification - Revamped Dynamic Island morphing */
+.audio-notification {
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    background: rgba(0, 0, 0, 0.9);
+    color: var(--text-white);
+    border: 2px solid var(--accent-purple);
+    font-family: 'Courier New', monospace;
+    font-size: 15px; /* Increased from 12px */
+    font-weight: 500;
+    backdrop-filter: blur(20px);
+    z-index: 1005;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Perfect initial state - starts as invisible dot (25% bigger) */
+    width: 75px; /* Increased from 60px */
+    height: 75px; /* Increased from 60px */
+    border-radius: 37.5px; /* Increased from 30px */
+    transform: translate(50%, -50%) scale(0.8);
+    transform-origin: center;
+    opacity: 0;
+    
+    /* Ultra-smooth morphing with perfect easing */
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    overflow: hidden;
+}
+
+/* Phase 1: Appear and grow */
+.audio-notification.init {
+    opacity: 1;
+    transform: translate(50%, -50%) scale(1);
+}
+
+/* Phase 2: Expand to Dynamic Island shape (25% bigger) */
+.audio-notification.expand {
+    width: 275px; /* Increased from 220px */
+    height: 62.5px; /* Increased from 50px */
+    border-radius: 31.25px; /* Increased from 25px */
+    transform: translate(calc(50% - 100px), -50%) scale(1); /* Adjusted offset for bigger size */
+    background: rgba(0, 0, 0, 0.95);
+    border-color: var(--accent-purple);
+    box-shadow: 
+        0 8px 32px rgba(139, 69, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Phase 3: Active state with subtle glow */
+.audio-notification.active {
+    box-shadow: 
+        0 12px 40px rgba(139, 69, 255, 0.4),
+        0 0 0 1px rgba(139, 69, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Phase 4: Collapse preparation (25% bigger) */
+.audio-notification.collapse {
+    width: 75px; /* Increased from 60px */
+    height: 75px; /* Increased from 60px */
+    border-radius: 37.5px; /* Increased from 30px */
+    transform: translate(50%, -50%) scale(1);
+    background: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 4px 16px rgba(139, 69, 255, 0.2);
+}
+
+/* Phase 5: Final disappear */
+.audio-notification.hide {
+    opacity: 0;
+    transform: translate(50%, -50%) scale(0.6);
+}
+
+/* Content animations */
+.audio-notification .notification-content {
+    position: absolute;
+    left: 25px; /* Increased from 20px */
+    right: 25px; /* Increased from 20px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.4s ease;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.audio-notification.active .notification-content {
+    opacity: 1;
+    transform: scale(1);
+    transition-delay: 0.2s;
+}
+
+.audio-notification.collapse .notification-content {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.2s ease;
+}
+
+/* Improved mute button integration */
+.mute-button {
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: visible;
+}
+
+/* Hide button content during morphing */
+.mute-button.morphing svg {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+}
+
+/* Restore button content */
+.mute-button:not(.morphing) svg {
+    opacity: 1;
+    transform: scale(1);
+    transition: all 0.3s ease;
+}
+
+/* Subtle pulsing animation for active state */
+@keyframes dynamicIslandPulse {
+    0%, 100% {
+        box-shadow: 
+            0 12px 40px rgba(139, 69, 255, 0.4),
+            0 0 0 1px rgba(139, 69, 255, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    50% {
+        box-shadow: 
+            0 16px 50px rgba(139, 69, 255, 0.6),
+            0 0 0 1px rgba(139, 69, 255, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+}
+
+.audio-notification.active {
+    animation: dynamicIslandPulse 3s ease-in-out infinite;
+}
+
+/* Playback Track Control - Modern Revamped Design */
+.playback-track {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(20, 20, 20, 0.65));
+    border: 1px solid rgba(139, 69, 255, 0.6);
+    border-radius: 50px;
+    backdrop-filter: blur(25px) saturate(1.5);
+    padding: 20px 25px;
+    min-width: 320px;
+    height: 66px;
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px) scale(0.9);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    z-index: 1003;
+    display: flex;
+    align-items: center;
+    
+    /* Modern glow and shadow effects */
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 8px 32px rgba(139, 69, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(139, 69, 255, 0.15);
+}
+
+.playback-track.visible {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    pointer-events: auto;
+}
+
+.track-container {
+    position: relative;
+    height: 8px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.25));
+    border-radius: 50px;
+    cursor: pointer;
+    overflow: hidden;
+    width: 100%;
+    flex: 1;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.track-progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #8A2BE2, #9966ff, #BB6EFF);
+    border-radius: 50px;
+    width: 0%;
+    transition: width 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 0 12px rgba(139, 69, 255, 0.6);
+}
+
+.track-handle {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 10px;
+    height: 20px;
+    background: linear-gradient(135deg, #8A2BE2, #9966ff);
+    transform: translate(-50%, -50%);
+    cursor: grab;
+    z-index: 2;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 
+        0 4px 12px rgba(139, 69, 255, 0.5),
+        0 2px 6px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.track-handle:hover {
+    transform: translate(-50%, -50%) scale(1.15);
+    box-shadow: 
+        0 6px 20px rgba(139, 69, 255, 0.7),
+        0 4px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 1);
+}
+
+.track-handle:active {
+    cursor: grabbing;
+    transform: translate(-50%, -50%) scale(1.05);
+    box-shadow: 
+        0 4px 12px rgba(139, 69, 255, 0.8),
+        0 2px 8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Video controls layout adjustment */
+.video-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 20px;
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1002;
+}
+
+/* Ensure mute button stays on the right */
+.mute-button {
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: visible;
+}
+
+/* Show track on video hover */
+.video-section:hover .playback-track {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    pointer-events: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .playback-track {
+        min-width: 220px;
+        padding: 12px 16px;
+    }
+    
+    .track-handle {
+        width: 14px;
+        height: 14px;
+    }
+}
+/*# sourceMappingURL=styles.css.map */

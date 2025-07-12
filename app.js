@@ -1,5 +1,15 @@
 // Smooth scrolling for navigation links
 document.addEventListener('DOMContentLoaded', function() {
+    // Ensure page starts at the top
+    window.scrollTo(0, 0);
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+    
+    // Re-enable smooth scrolling after initial positioning
+    setTimeout(() => {
+        document.documentElement.style.scrollBehavior = 'smooth';
+    }, 100);
+    
     // Typewriter effect for hero title - Type, delete, type next
     const typewriterText = document.querySelector('.typewriter-text');
     const lines = [
@@ -447,111 +457,405 @@ document.addEventListener('DOMContentLoaded', function() {
             copyButton.classList.remove('copied');
         }, 2000);
     }
+
+    // Video Introduction Functionality
+    const introVideo = document.getElementById('introVideo');
+    const muteBtn = document.getElementById('muteBtn');
+    const videoClickArea = document.getElementById('videoClickArea');
+    const videoSection = document.getElementById('video-intro');
     
-    // Facebook SDK Configuration and Video API
-    window.fbAsyncInit = function() {
-        FB.init({
-            appId: 'YOUR_APP_ID', // Replace with your Facebook App ID
-            cookie: true,
-            xfbml: true,
-            version: 'v18.0'
+    if (introVideo && muteBtn && videoClickArea) {
+        // Create play/pause indicator
+        const playPauseIndicator = document.createElement('div');
+        playPauseIndicator.className = 'play-pause-indicator';
+        playPauseIndicator.innerHTML = `
+            <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+        `;
+        videoSection.appendChild(playPauseIndicator);
+        
+        // Video click to play/pause
+        videoClickArea.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Ensure we're in video mode when clicking
+            if (!isInVideoMode) {
+                enterVideoMode();
+            }
+            
+            if (introVideo.paused) {
+                introVideo.play().then(() => {
+                    showIndicator('play');
+                    videoSection.classList.remove('paused');
+                }).catch(e => {
+                    console.log('Play failed:', e);
+                });
+            } else {
+                introVideo.pause();
+                showIndicator('pause');
+                videoSection.classList.add('paused');
+            }
         });
         
-        FB.AppEvents.logPageView();
-        
-        // Initialize video API functionality
-        initializeFacebookVideoAPI();
-    };
-
-    function initializeFacebookVideoAPI() {
-        console.log('Facebook Video API initialized');
-        
-        // Example: Get user's videos (requires permissions)
-        function getUserVideos() {
-            FB.login(function(response) {
-                if (response.authResponse) {
-                    FB.api('/me/videos', 'GET', {
-                        fields: 'id,title,description,source,thumbnail'
-                    }, function(response) {
-                        if (response && response.data) {
-                            console.log('User videos:', response.data);
-                            displayVideos(response.data);
-                        }
-                    });
-                } else {
-                    console.log('User cancelled login or did not fully authorize.');
-                }
-            }, {scope: 'user_videos'});
+        // Show play/pause indicator
+        function showIndicator(type) {
+            const playIcon = playPauseIndicator.querySelector('.play-icon');
+            const pauseIcon = playPauseIndicator.querySelector('.pause-icon');
+            
+            if (type === 'play') {
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+            } else {
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+            }
+            
+            playPauseIndicator.classList.add('show');
+            setTimeout(() => {
+                playPauseIndicator.classList.remove('show');
+            }, 1000);
         }
         
-        // Example: Upload video to Facebook (requires publish permissions)
-        function uploadVideoToFacebook(videoFile, title, description) {
-            FB.login(function(response) {
-                if (response.authResponse) {
-                    const formData = new FormData();
-                    formData.append('title', title);
-                    formData.append('description', description);
-                    formData.append('source', videoFile);
-                    
-                    FB.api('/me/videos', 'POST', formData, function(response) {
-                        if (response && !response.error) {
-                            console.log('Video uploaded successfully:', response);
-                        } else {
-                            console.error('Error uploading video:', response.error);
-                        }
-                    });
-                }
-            }, {scope: 'publish_video'});
-        }
+        // Mute/Unmute functionality
+        muteBtn.addEventListener('click', function() {
+            const volumeIcon = muteBtn.querySelector('.volume-icon');
+            const muteIcon = muteBtn.querySelector('.mute-icon');
+            
+            if (introVideo.muted) {
+                introVideo.muted = false;
+                volumeIcon.style.display = 'block';
+                muteIcon.style.display = 'none';
+                hideAudioNotification(); // Hide notification when user enables audio
+            } else {
+                introVideo.muted = true;
+                volumeIcon.style.display = 'none';
+                muteIcon.style.display = 'block';
+            }
+        });
         
-        // Example: Embed Facebook video player
-        function embedFacebookVideo(videoId, containerId) {
-            const container = document.getElementById(containerId);
-            if (container) {
-                container.innerHTML = `
-                    <div class="fb-video" 
-                         data-href="https://www.facebook.com/facebook/videos/${videoId}/" 
-                         data-width="500" 
-                         data-show-text="false">
-                    </div>
-                `;
-                
-                // Re-parse Facebook plugins
-                if (typeof FB !== 'undefined') {
-                    FB.XFBML.parse();
-                }
+        // Function to update mute button UI
+        function updateMuteButtonUI(isMuted) {
+            const volumeIcon = muteBtn.querySelector('.volume-icon');
+            const muteIcon = muteBtn.querySelector('.mute-icon');
+            
+            if (isMuted) {
+                volumeIcon.style.display = 'none';
+                muteIcon.style.display = 'block';
+            } else {
+                volumeIcon.style.display = 'block';
+                muteIcon.style.display = 'none';
             }
         }
         
-        // Make functions globally available
-        window.getUserVideos = getUserVideos;
-        window.uploadVideoToFacebook = uploadVideoToFacebook;
-        window.embedFacebookVideo = embedFacebookVideo;
-    }
-
-    function displayVideos(videos) {
-        // You can customize this function to display videos in your UI
-        const videoContainer = document.getElementById('facebook-videos');
-        if (videoContainer) {
-            videoContainer.innerHTML = '';
-            videos.forEach(video => {
-                const videoElement = document.createElement('div');
-                videoElement.className = 'facebook-video-item';
-                videoElement.innerHTML = `
-                    <h4>${video.title || 'Untitled Video'}</h4>
-                    <p>${video.description || 'No description'}</p>
-                    <div class="fb-video" 
-                         data-href="https://www.facebook.com/video.php?v=${video.id}" 
-                         data-width="300">
-                    </div>
-                `;
-                videoContainer.appendChild(videoElement);
+        // Global flag to prevent multiple notifications
+        let isNotificationActive = false;
+        
+        // Function to show audio notification with revamped morphing
+        function showAudioNotification() {
+            // Prevent multiple notifications
+            if (isNotificationActive) {
+                return;
+            }
+            
+            isNotificationActive = true;
+            
+            // Clean slate - remove any existing notifications
+            document.querySelectorAll('.audio-notification').forEach(notif => {
+                notif.remove();
             });
             
-            // Re-parse Facebook plugins
-            if (typeof FB !== 'undefined') {
-                FB.XFBML.parse();
+            // Clear all timeouts
+            clearAllNotificationTimeouts();
+            
+            // Add morphing class to button
+            muteBtn.classList.add('morphing');
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'audio-notification';
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span>Click to enable audio</span>
+                </div>
+            `;
+            
+            // Attach to mute button
+            muteBtn.appendChild(notification);
+            
+            // Phase-based morphing animation
+            requestAnimationFrame(() => {
+                // Phase 1: Initialize and appear (0ms)
+                notification.classList.add('init');
+                
+                setTimeout(() => {
+                    // Phase 2: Expand to Dynamic Island (150ms)
+                    notification.classList.add('expand');
+                }, 150);
+                
+                setTimeout(() => {
+                    // Phase 3: Activate with content (400ms)
+                    notification.classList.add('active');
+                }, 400);
+                
+                // Auto-hide sequence after 3 seconds
+                window.hideTimeout = setTimeout(() => {
+                    hideAudioNotification();
+                }, 3000);
+            });
+        }
+        
+        // Clear all notification timeouts
+        function clearAllNotificationTimeouts() {
+            if (window.hideTimeout) {
+                clearTimeout(window.hideTimeout);
+                window.hideTimeout = null;
+            }
+            if (window.collapseTimeout) {
+                clearTimeout(window.collapseTimeout);
+                window.collapseTimeout = null;
+            }
+            if (window.removeTimeout) {
+                clearTimeout(window.removeTimeout);
+                window.removeTimeout = null;
             }
         }
+        
+        // Function to hide audio notification with revamped morphing
+        function hideAudioNotification() {
+            const notification = document.querySelector('.audio-notification');
+            if (!notification) {
+                isNotificationActive = false;
+                muteBtn.classList.remove('morphing');
+                return;
+            }
+            
+            // Clear any pending timeouts
+            clearAllNotificationTimeouts();
+            
+            // Phase-based collapse animation
+            requestAnimationFrame(() => {
+                // Phase 1: Remove active state and content (0ms)
+                notification.classList.remove('active');
+                
+                setTimeout(() => {
+                    // Phase 2: Collapse to button size (200ms)
+                    notification.classList.remove('expand');
+                    notification.classList.add('collapse');
+                }, 200);
+                
+                setTimeout(() => {
+                    // Phase 3: Fade out (500ms)
+                    notification.classList.add('hide');
+                }, 500);
+                
+                setTimeout(() => {
+                    // Phase 4: Clean removal (800ms)
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                    
+                    // Restore button state
+                    muteBtn.classList.remove('morphing');
+                    isNotificationActive = false;
+                }, 800);
+            });
+        }
+        
+        // Auto-advance when video ends
+        introVideo.addEventListener('ended', function() {
+            setTimeout(() => {
+                document.getElementById('photo-montage').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+            }, 1000);
+        });
     }
+    
+    // Smooth scroll from photo montage to about section
+    const scrollIndicator = document.querySelector('.scroll-indicator');
+    if (scrollIndicator) {
+        scrollIndicator.addEventListener('click', function() {
+            document.getElementById('about').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+    }
+    
+    // Dark mode functionality for video section
+    let isInVideoMode = false;
+    
+    function enterVideoMode() {
+        if (!isInVideoMode) {
+            isInVideoMode = true;
+            document.body.classList.add('video-mode');
+        }
+    }
+    
+    function exitVideoMode() {
+        if (isInVideoMode) {
+            isInVideoMode = false;
+            document.body.classList.remove('video-mode');
+        }
+    }
+    
+    // Intersection Observer for smooth transitions and autoplay
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px 0px -20% 0px'
+    };
+    
+    let pageLoaded = false;
+    let hasScrolledToVideo = false;
+    
+    // Prevent immediate video activation on page load
+    setTimeout(() => {
+        pageLoaded = true;
+    }, 1000); // Reduced to 1 second
+    
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && pageLoaded) {
+                entry.target.classList.add('visible');
+                
+                // Auto-play video when scrolled into view and enter dark mode
+                if (entry.target.id === 'video-intro' && introVideo) {
+                    // Check if user has scrolled or if they've been to video section before
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    if (scrollTop > window.innerHeight * 0.2 || hasScrolledToVideo) {
+                        hasScrolledToVideo = true;
+                        
+                        // Enter video mode first
+                        enterVideoMode();
+                        
+                        setTimeout(() => {
+                            // Only try to autoplay if video isn't already playing
+                            if (introVideo.paused) {
+                                // Start with muted autoplay for better browser compatibility
+                                introVideo.muted = true;
+                                introVideo.play().then(() => {
+                                    // Video started successfully muted, update mute button UI
+                                    updateMuteButtonUI(true);
+                                    // Show audio notification after a delay
+                                    setTimeout(() => {
+                                        showAudioNotification();
+                                    }, 2000);
+                                }).catch(e => {
+                                    console.log('All autoplay prevented:', e);
+                                });
+                            }
+                        }, 300);
+                    }
+                }
+            } else {
+                // Exit dark mode and pause video when scrolled out of view
+                if (entry.target.id === 'video-intro' && introVideo) {
+                    // Only exit if we're actually leaving the section
+                    setTimeout(() => {
+                        exitVideoMode();
+                        if (!introVideo.paused) {
+                            introVideo.pause();
+                        }
+                        videoSection.classList.add('paused');
+                    }, 100); // Small delay to prevent flickering
+                }
+            }
+        });
+    }, observerOptions);
+    
+    // Observe video and montage sections
+    const videoSectionElement = document.getElementById('video-intro');
+    const montageSection = document.getElementById('photo-montage');
+    
+    if (videoSectionElement) sectionObserver.observe(videoSectionElement);
+    if (montageSection) sectionObserver.observe(montageSection);        // Playback track functionality
+        const playbackTrack = document.getElementById('playbackTrack');
+        const trackProgress = document.getElementById('trackProgress');
+        const trackHandle = document.getElementById('trackHandle');
+        const trackContainer = playbackTrack.querySelector('.track-container');
+        
+        let isDragging = false;
+        
+        // Update track progress
+        function updateTrackProgress() {
+            if (!isDragging && introVideo.duration) {
+                const progress = (introVideo.currentTime / introVideo.duration) * 100;
+                trackProgress.style.width = `${progress}%`;
+                trackHandle.style.left = `${progress}%`;
+                
+                // Add playing animation when video is playing
+                if (!introVideo.paused) {
+                    playbackTrack.classList.add('playing');
+                } else {
+                    playbackTrack.classList.remove('playing');
+                }
+            }
+        }        // Handle track click/drag
+        function handleTrackInteraction(e) {
+            if (!introVideo.duration) return;
+            
+            const rect = trackContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+            const newTime = (percentage / 100) * introVideo.duration;
+            
+            introVideo.currentTime = newTime;
+            trackProgress.style.width = `${percentage}%`;
+            trackHandle.style.left = `${percentage}%`;
+        }
+    
+    // Track container click
+    trackContainer.addEventListener('click', handleTrackInteraction);
+    
+    // Handle dragging
+    trackHandle.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        trackHandle.style.cursor = 'grabbing';
+        e.preventDefault();
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            handleTrackInteraction(e);
+        }
+    });
+    
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            trackHandle.style.cursor = 'grab';
+        }
+    });
+    
+    // Update progress during video playback
+    introVideo.addEventListener('timeupdate', updateTrackProgress);
+    introVideo.addEventListener('loadedmetadata', updateTrackProgress);        // Show/hide track on video section hover
+        const videoContainer = document.querySelector('.video-section');
+        let trackTimeout;
+        
+        videoContainer.addEventListener('mouseenter', () => {
+            clearTimeout(trackTimeout);
+            playbackTrack.classList.add('visible');
+        });
+        
+        videoContainer.addEventListener('mouseleave', () => {
+            trackTimeout = setTimeout(() => {
+                playbackTrack.classList.remove('visible');
+            }, 1000); // Hide after 1 second
+        });
+    
+    // Keep track visible when hovering over it
+    playbackTrack.addEventListener('mouseenter', () => {
+        clearTimeout(trackTimeout);
+    });
+    
+    playbackTrack.addEventListener('mouseleave', () => {
+        trackTimeout = setTimeout(() => {
+            playbackTrack.classList.remove('visible');
+        }, 1000);
+    });
 });
